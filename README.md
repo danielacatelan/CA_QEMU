@@ -12,6 +12,7 @@ Registro, passo a passo, do que foi feito para montar o ambiente e **localizar o
 6. [Abrir e editar os arquivos](#6-abrir-e-editar-os-arquivos)
 7. [Problemas encontrados](#7-problemas-encontrados)
 8. [Próximos passos](#8-próximos-passos)
+9. [Experimento local: addx](#9-experimento-local-addx)
 
 ---
 
@@ -171,7 +172,7 @@ nano insn32.decode
 
 Atalhos do nano: `Ctrl+O` e Enter salvam, `Ctrl+X` sai, `Ctrl+W` procura.
 
-Regra adotada: **não alterar os arquivos originais**; as instruções aproximadas serão criadas em arquivos novos. Para desfazer uma edição acidental:
+Este repositório guarda documentação, testes e *patches*; o código-fonte completo do QEMU fica em um clone de trabalho separado. A implementação de uma instrução pode exigir alterações localizadas nos arquivos existentes do clone, como o decodificador e o tradutor. Registre essas alterações como *patches*, sem copiar o código-fonte inteiro para este repositório. Para descartar uma edição local acidental no clone:
 
 ```bash
 git checkout -- target/riscv/NOME_DO_ARQUIVO
@@ -191,6 +192,20 @@ git checkout -- target/riscv/NOME_DO_ARQUIVO
 - [ ] Escolher a operação a aproximar (soma, multiplicação ou ponto flutuante)
 - [ ] Definir com o orientador a técnica de aproximação
 - [ ] Compilar o QEMU para RISC-V no WSL
-- [ ] Criar a primeira instrução aproximada no espaço *custom* do RISC-V (opcodes `custom-0` = `0x0B`, `custom-1` = `0x2B`, `custom-2` = `0x5B`, `custom-3` = `0x7B`), usando as extensões já existentes no código como modelo
+- [ ] Confirmar a semântica pretendida para o protótipo `addx` e validar seu teste em um build configurado
+- [ ] Finalizar a primeira instrução aproximada no espaço *custom* do RISC-V (opcodes `custom-0` = `0x0B`, `custom-1` = `0x2B`, `custom-2` = `0x5B`, `custom-3` = `0x7B`), usando as extensões já existentes no código como modelo
 - [ ] Escrever programas de teste em C e comparar com o QEMU original do Windows
 - [ ] Guardar neste repositório apenas documentação, testes e *patches* (o código-fonte do QEMU não deve ser copiado para cá)
+
+## 9. Experimento local: addx
+
+Foi iniciado um protótipo local de instrução RISC-V no espaço `custom-1`
+(`0x2B`), junto com um teste para `riscv64`. Na implementação atual, `addx`
+calcula XOR entre os operandos; portanto, ainda é necessário confirmar que essa
+é a semântica desejada antes de tratá-la como uma instrução de soma ou como a
+operação aproximada final.
+
+O teste fonte existe, mas a tentativa de executá-lo no build disponível não
+reconheceu `test-addx` como um teste configurado. A validação funcional continua
+pendente. O registro detalhado das alterações e do estado do teste está em
+[docs/experiments/riscv-addx.md](docs/experiments/riscv-addx.md).
